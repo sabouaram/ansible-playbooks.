@@ -1,0 +1,36 @@
+- name: Deploy a web application.
+  hosts: all
+  tasks:
+   - name: Try Ping
+     ping:
+   - name: Install all required dependencies
+     yum: name={{ item }} state=installed
+     with_items:
+       - epel-release
+       - python
+       - python-pip
+   - name: Install mysql-server
+     yum: name= mysql-server state=installed
+   - name: Start the MYSQL service
+     service:
+      name: mysql
+      state: started
+      enabled: yes
+   - name: Create application database
+     mysql_db: name=employee_db state=present
+   - name: create a database user
+     mysql_user: 
+      name: db_user
+      password: Passw0rd
+      priv: '*.*:ALL'
+      state: present
+   - name: installing python dependencies
+     pip:
+      name: {{ item }}
+      state: present
+     with_items:
+       - flask
+       - flask-mysql
+       
+
+          
